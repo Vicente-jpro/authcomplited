@@ -1,14 +1,15 @@
-package com.example.authcomplited.dto;
+package com.example.authcomplited.request;
+
+import javax.persistence.Column;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class UserDetailsDto {
-
-    private Long id;
+public class UserRequest {
     private String firstName;
     private String lastName;
     private String email;
+    private String passwrd;
 }
