@@ -23,15 +23,28 @@ public class User {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "fistName", length = 40)
+
+    @Column(name = "user_id", nullable = false)
+    private String userId;
+
+    @Column(name = "fistName", length = 40, nullable = false)
     private String firstName;
 
-    @Column(name = "lastName", length = 40)
+    @Column(name = "lastName", length = 40, nullable = false)
     private String lastName;
 
-    @Column(name = "email", length = 40)
+    @Column(name = "email", length = 40, nullable = false)
     private String email;
 
-    @Column(name = "password", length = 40)
+    @Column(name = "password", length = 40, nullable = false)
     private String passwrd;
+
+    @Column(name = "encrypted_password")
+    private String encryptedPassword;
+
+    @Column(name = "email_verification_token")
+    private String emailVerificationToken;
+
+    @Column(name = "email_verification_status")
+    private Boolean emailVerificationStatus;
 }
