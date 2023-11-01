@@ -19,5 +19,5 @@ public class UserDto {
     private String passwrd;
     private String encryptedPassword;
     private String emailVerificationToken;
-    private Boolean emailVerificationStatus;
+    private Boolean emailVerificationStatus = false;
 }
