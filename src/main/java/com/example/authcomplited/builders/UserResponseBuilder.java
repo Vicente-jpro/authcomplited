@@ -2,9 +2,9 @@ package com.example.authcomplited.builders;
 
 import org.springframework.stereotype.Component;
 
+import com.example.authcomplited.dto.UserRequestDto;
+import com.example.authcomplited.dto.UserResponseDto;
 import com.example.authcomplited.models.User;
-import com.example.authcomplited.request.UserRequest;
-import com.example.authcomplited.responses.UserResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserResponseBuilder {
 
-    public User toModel(UserRequest userModelRequest) {
+    public User toModel(UserRequestDto userModelRequest) {
         return User
                 .builder()
                 .firstName(userModelRequest.getFirstName())
@@ -23,8 +23,8 @@ public class UserResponseBuilder {
 
     }
 
-    public UserResponse toDto(User user) {
-        return UserResponse
+    public UserResponseDto toDto(User user) {
+        return UserResponseDto
                 .builder()
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())

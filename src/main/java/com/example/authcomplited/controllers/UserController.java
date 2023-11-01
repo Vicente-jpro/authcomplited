@@ -1,5 +1,6 @@
 package com.example.authcomplited.controllers;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,11 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.authcomplited.builders.UserRequestBuilder;
-import com.example.authcomplited.builders.UserResponseBuilder;
+import com.example.authcomplited.dto.UserRequestDto;
+import com.example.authcomplited.dto.UserResponseDto;
 import com.example.authcomplited.models.User;
-import com.example.authcomplited.request.UserRequest;
-import com.example.authcomplited.responses.UserResponse;
 import com.example.authcomplited.services.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,8 +23,6 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserService userService;
-    private final UserRequestBuilder userRequestBuilder;
-    private final UserResponseBuilder userResponseBuilder;
 
     @GetMapping
     public String getUser() {
@@ -38,11 +35,16 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> create(@RequestBody UserRequest userModelRequest) {
-        User user = userRequestBuilder.toModel(userModelRequest);
+    public ResponseEntity<UserResponseDto> create(@RequestBody UserRequestDto userRequestDto) {
+
+        User user = new User();
+        BeanUtils.copyProperties(userRequestDto, user);
         User userSalvo = userService.salvar(user);
-        UserResponse userResponse = userResponseBuilder.toDto(userSalvo);
-        return ResponseEntity.ok(userResponse);
+
+        UserResponseDto userResponseDto = new UserResponseDto();
+        BeanUtils.copyProperties(userSalvo, userResponseDto);
+
+        return ResponseEntity.ok(userResponseDto);
     }
 
     @DeleteMapping
