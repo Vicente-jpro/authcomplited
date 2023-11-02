@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +25,14 @@ public class ApplicationControllerAdvice {
 	@ExceptionHandler(UserExistException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ApiErrors usuarioCadastradoExceptionHandle(UserExistException ex) {
+		this.mensagemErro = ex.getMessage();
+		return new ApiErrors(mensagemErro);
+	}
+
+	@ResponseBody
+	@ExceptionHandler(UsernameNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ApiErrors usernameNotFoundExceptionHandle(UsernameNotFoundException ex) {
 		this.mensagemErro = ex.getMessage();
 		return new ApiErrors(mensagemErro);
 	}
