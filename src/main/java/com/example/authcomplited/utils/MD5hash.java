@@ -20,7 +20,7 @@ public class MD5hash {
     }
 
     public String getShash() {
-        String hash = firstName + email + lastName;
+        String hash = firstName + email + lastName + "java";
         return DigestUtils.md5DigestAsHex(hash.getBytes());
     }
 }
