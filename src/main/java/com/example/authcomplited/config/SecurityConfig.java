@@ -14,9 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.authcomplited.securityjwt.JwtAuthFilter;
+import com.example.authcomplited.securityjwt.JwtService;
 import com.example.authcomplited.services.UserService;
-
-import lombok.RequiredArgsConstructor;
 
 @SuppressWarnings("deprecation")
 @EnableWebSecurity
@@ -25,15 +25,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserService usuarioService;
 
-	/*
-	 * @Autowired
-	 * private JwtService jwtService;
-	 * 
-	 * @Bean
-	 * public OncePerRequestFilter jwtFilter() {
-	 * return new JwtAuthFilter(jwtService, usuarioService);
-	 * }
-	 */
+	@Autowired
+	private JwtService jwtService;
+
+	@Bean
+	public OncePerRequestFilter jwtFilter() {
+		return new JwtAuthFilter(jwtService, usuarioService);
+
+	}
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -48,35 +48,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-				.csrf().disable() // Para trabalhar no modo API
+				.csrf(csrf -> csrf.disable()) // Para trabalhar no modo API
 				.authorizeHttpRequests() // Autorizar o pedido
-				// .antMatchers("/api/clientes/**").authenticated() Cliente deve estar
-				// autenticado para acessar API clientes
-				// .antMatchers("/api/clientes/**").hasRole("USER") Cliente deve ter ROLE "USER"
-				// para acessar API
-				// .antMatchers("/api/clientes/**").hasAuthority("MANTER USUARIO") Autenticado
-				// permante para acessar API
-				// .antMatchers("/api/clientes/**").permitAll() Permitir todos os usuários
-				// acessarem essa rota
-				.antMatchers("/api/clientes/**")
-				.hasAnyRole("USER", "ADMIN")
-
-				.antMatchers("/api/pedidos/**")
-				.hasAnyRole("USER", "ADMIN")
-
-				.antMatchers("/api/produtos/**")
-				.hasRole("ADMIN")
 				.antMatchers(HttpMethod.POST, "/users/**")
 				.permitAll()
 				.anyRequest().authenticated()
 				.and()
-				// .formLogin() Fazer autenticacao via formulario html
-				// .httpBasic(); Utilizado para fazer autenticação via header no ato da
-				// requisição.
-				.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		// .and()
-		// .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+				.sessionManagement(management -> management
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+
 	}
 
 	// Permitir o uso do swagger sem ser autenticado
