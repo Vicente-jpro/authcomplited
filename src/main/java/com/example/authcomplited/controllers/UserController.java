@@ -1,7 +1,9 @@
 package com.example.authcomplited.controllers;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,6 +16,7 @@ import com.example.authcomplited.dto.UserRequestDto;
 import com.example.authcomplited.dto.UserResponseDto;
 import com.example.authcomplited.models.User;
 import com.example.authcomplited.services.UserService;
+import com.example.authcomplited.utils.MD5hash;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,9 +27,13 @@ public class UserController {
 
     private final UserService userService;
 
+    @Autowired
+    private MD5hash md5hash;
+
     @GetMapping
     public String getUser() {
-        return "Hello form user controller.";
+        md5hash = new MD5hash("Vicente", "Simão", "vicenteviciii@gmail.com");
+        return md5hash.getShash();
     }
 
     @PatchMapping

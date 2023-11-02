@@ -1,10 +1,13 @@
 package com.example.authcomplited.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import com.example.authcomplited.exceptions.UserExistException;
 import com.example.authcomplited.models.User;
 import com.example.authcomplited.repositories.UserRepository;
+import com.example.authcomplited.utils.MD5hash;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
