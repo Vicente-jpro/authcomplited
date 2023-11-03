@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.authcomplited.exceptions.SenhaInvalidaException;
 import com.example.authcomplited.exceptions.UserExistException;
 import com.example.authcomplited.utils.ApiErrors;
 
@@ -25,6 +26,14 @@ public class ApplicationControllerAdvice {
 	@ExceptionHandler(UserExistException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ApiErrors usuarioCadastradoExceptionHandle(UserExistException ex) {
+		this.mensagemErro = ex.getMessage();
+		return new ApiErrors(mensagemErro);
+	}
+
+	@ResponseBody
+	@ExceptionHandler(SenhaInvalidaException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ApiErrors senhaInvalidaExceptionHandle(SenhaInvalidaException ex) {
 		this.mensagemErro = ex.getMessage();
 		return new ApiErrors(mensagemErro);
 	}

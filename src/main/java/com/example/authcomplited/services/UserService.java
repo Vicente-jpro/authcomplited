@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.authcomplited.dto.UserDto;
+import com.example.authcomplited.dto.UserLoginDto;
+import com.example.authcomplited.exceptions.SenhaInvalidaException;
 import com.example.authcomplited.exceptions.UserExistException;
 import com.example.authcomplited.models.User;
 import com.example.authcomplited.repositories.UserRepository;
@@ -56,7 +58,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
+        User user = getUserByEmail(email);
         if (user == null) {
             log.info("Usuário não existe: " + email);
             throw new UsernameNotFoundException("Usuário não existe:" + email);
@@ -66,4 +68,17 @@ public class UserService implements UserDetailsService {
 
         return (UserDetails) user;
     }
+
+    public UserDetails autenticar(UserLoginDto userLoginDto) {
+        UserDetails userDetails = this.loadUserByUsername(userLoginDto.getEmail());
+        // passwordEncoder.matches(senhaDigitada, senhaGravadaNoBD)
+        boolean senhaCorreta = passwordEncoder.matches(userLoginDto.getPasswrd(), userDetails.getPassword());
+
+        if (senhaCorreta) {
+            return userDetails;
+        }
+        log.info("Acesso invalido: palavra-passe ou email não está correto");
+        throw new SenhaInvalidaException();
+    }
+
 }

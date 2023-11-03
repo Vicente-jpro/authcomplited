@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.authcomplited.SpringApplicationContext;
+import com.example.authcomplited.models.User;
 import com.example.authcomplited.services.UserService;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -36,13 +38,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 			boolean isValid = jwtService.tokenValido(token);
 
 			if (isValid) {
-				String loginUsuario = jwtService.obterLoginUsuario(token);
-				UserDetails userDetails = usuarioService.loadUserByUsername(loginUsuario);
+				String email = jwtService.obterLoginUsuario(token);
+				UserDetails userDetails = usuarioService.loadUserByUsername(email);
 				UsernamePasswordAuthenticationToken user = new UsernamePasswordAuthenticationToken(userDetails, null,
 						userDetails.getAuthorities());
 
 				user.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(user);
+
+				UserService userService = (UserService) SpringApplicationContext.getBean("userService");
+				User userLogado = userService.getUserByEmail(email);
+				response.addHeader("UserID", userLogado.getUserId());
 			}
 		}
 
